@@ -1,7 +1,7 @@
 import React from "react";
 import "./index.css";
 import { KeyboardContainer, MainContainer, StyledTextArea } from "./Styles/App";
-import { keyLayout } from "./Utility/utils";
+import { keyLayout, shuffleKeyboardKeys } from "./Utility/utils";
 
 function useStateRef(initialValue: any) {
   const [value, setValue] = React.useState(initialValue);
@@ -95,8 +95,8 @@ function App() {
             setValue((prevValue) => {
               return prevValue.substring(0, prevValue.length - 1);
             });
+            shuffleKeyboardKeys();
           });
-
           break;
 
         case "shift":
@@ -106,8 +106,10 @@ function App() {
             "keyboard__key--activatable"
           );
           keyElement.innerHTML = createIconHTML("north");
-          keyElement.addEventListener("click", () => shiftHandler(keyElement));
-
+          keyElement.addEventListener("click", () => {
+            shiftHandler(keyElement);
+            shuffleKeyboardKeys();
+          });
           break;
 
         case "caps":
@@ -126,8 +128,8 @@ function App() {
               !capsRef.current
             );
             toggleCapsLock();
+            shuffleKeyboardKeys();
           });
-
           break;
 
         case "enter":
@@ -136,8 +138,8 @@ function App() {
 
           keyElement.addEventListener("click", () => {
             setValue((prevValue) => prevValue + "\n");
+            shuffleKeyboardKeys();
           });
-
           break;
 
         case "space":
@@ -146,6 +148,7 @@ function App() {
 
           keyElement.addEventListener("click", () => {
             setValue((prevValue) => prevValue + " ");
+            shuffleKeyboardKeys();
           });
 
           break;
@@ -184,6 +187,7 @@ function App() {
             if (shiftRef.current) {
               shiftHandler(document.getElementById("shift__key"));
             }
+            shuffleKeyboardKeys();
           });
 
           break;
@@ -202,6 +206,7 @@ function App() {
   React.useEffect(() => {
     const container = document.getElementById("main");
     const keysContainer = document.createElement("div");
+    keysContainer.setAttribute("id", "main_keyboard");
     keysContainer.classList.add("keyboard__keys");
     keysContainer?.appendChild(createKeys());
     container?.appendChild(keysContainer);
